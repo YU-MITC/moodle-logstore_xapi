@@ -1,11 +1,13 @@
 # moodle-logstore_xapi
 Customized Moodle xAPI logstore plugin
 
-This plugin emits xAPI log statements to an Learning Record Store (LRS).
+This plugin emits xAPI (Experience API) log statements to an LRS (Learning Record Store).
 
-In order to emit detailed log statements (e.x. answers value for quiz, grades, and responses for questionnaire), conversion scripts for each event and question type is required.
+For example, the "Learning Locker" is well known as xAPI-compliant LRS.
+
+In order to emit detailed log statements (e.g. answers value for quiz, grades, and responses for questionnaire), conversion scripts for each event and question type are required.
 xAPI formatted logs stored in the LRS are very useful for "Learning Analytics".
-However, traditional x API plugin only supports a small number of plugins and question types.
+However, traditional xAPI plugin only supports a small number of plugins and question types.
 
 So, we have added/modified PHP scripts in order to more plugin events and question types.
 
