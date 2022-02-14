@@ -25,6 +25,7 @@ Additionally, we have added the following question types to supported question t
 - Calculated
 - Calculated multichoice
 - Calculated simple
+- Cloze
 - Drag and drop into text
 - Drag and drop markers
 - Drag and drop onto image
