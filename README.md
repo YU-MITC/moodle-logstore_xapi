@@ -20,7 +20,7 @@ We have added the following plugins to supported plugins.
 - mod_vpl (7 events)
 - mod_workshop (6 events)
 
-Additionally, we have added the following question types to supported question types.
+Additionally, we have added the following question types to supported question types in quiz module.
 
 - Calculated
 - Calculated multichoice
