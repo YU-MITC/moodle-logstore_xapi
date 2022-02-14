@@ -10,7 +10,7 @@ And, the "Learning Locker" is well known as xAPI-compliant LRS.
 In order to emit detailed log statements (e.g. answers value for quiz, grades, and responses for questionnaire), conversion scripts for each event and question type are required.
 However, traditional xAPI plugin only supports a small number of plugins and question types.
 
-So, we have added/modified PHP scripts in order to more plugin events and question types.
+So, we have added/modified PHP scripts in order to support more plugin events and question types.
 
 We have added the following plugins to supported plugins.
 
