@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * Log creation script for the VPL module.
  *
@@ -28,6 +27,7 @@ namespace src\transformer\events\mod_vpl;
 defined('MOODLE_INTERNAL') || die();
 
 use src\transformer\utils as utils;
+
 /**
  * This function creates submission evaluated log about VPL module.
  * @param array $config - array of configurations.

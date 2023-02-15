@@ -24,7 +24,8 @@ function scoreraw_submitted(array $config, \stdClass $event) {
     $repo = $config['repo'];
     $user = $repo->read_record_by_id('user', $event->userid);
     $course = $repo->read_record_by_id('course', $event->courseid);
-    $scorm = $repo->read_record_by_id('scorm', $event->objectid);
+    $module = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
+    $scorm = $repo->read_record_by_id('scorm', $module->instance);
     $lang = utils\get_course_lang($course);
 
     $unserializedcmi = unserialize($event->other);

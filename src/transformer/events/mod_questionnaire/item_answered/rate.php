@@ -60,6 +60,7 @@ function rate(array $config, \stdClass $event, \stdClass $question, $tablename, 
     }
 
     $choices = '';
+    $items = '';
 
     if (!empty($rankarray)) {
         $choices = implode(" ", $rankarray);

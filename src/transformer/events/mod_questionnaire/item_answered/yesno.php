@@ -45,13 +45,12 @@ function yesno(array $config, \stdClass $event, \stdClass $question, $tablename,
     $lang = utils\get_course_lang($course);
     $tablename = 'questionnaire_' . $tablename;
 
-    $choice = null;
-    $choice = $repo->read_records($tablename, ['response_id' => $responseid, 'question_id' => $question->id]);
-    $choice = array_slice($choice, -1, 1);
-
     $choicelabel = '';
 
+    $choice = $repo->read_records($tablename, ['response_id' => $responseid, 'question_id' => $question->id]);
+
     if (!empty($choice)) {
+        $choice = array_slice($choice, -1, 1);
         $choicelabel = $choice[0]->choice_id;
         if (strcmp($choicelabel, 'y') == 0) {
             $choicelabel = 'yes';

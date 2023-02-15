@@ -61,6 +61,11 @@ function checkboxes(array $config, \stdClass $event, \stdClass $question, $table
         $choices = implode(" ", $tmparray);
     }
 
+    if (!empty($choices)) {
+        $choices = utils\get_string_html_removed(trim($choices));
+        $choices = utils\get_string_math_removed(trim($choices));
+    }
+
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => [

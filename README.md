@@ -34,3 +34,13 @@ Additionally, we have added the following question types to supported question t
 
 Now, codes of this plugin are based on the xAPI plugin (logstore_xapi) version 4.6.0.
 
+Change log of YU Kaltura Media Local Libraries
+------
+
+Version 4.8.0 (YU mnodified)
+
+* fixed issues that occur when there are blank answers in quizzes, feedbacks, and questionnaires.
+
+Version 4.7.0 (YU mnodified)
+
+* add some event callback funcions.

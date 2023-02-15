@@ -28,6 +28,7 @@ function attempt_submitted(array $config, \stdClass $event) {
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
     $gradeitem = $repo->read_record('grade_items', [
+        'itemtype' => 'mod',
         'itemmodule' => 'quiz',
         'iteminstance' => $quiz->id,
     ]);

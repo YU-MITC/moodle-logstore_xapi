@@ -28,7 +28,25 @@ function gapselect(array $config, \stdClass $event, \stdClass $questionattempt, 
     $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $lang = utils\get_course_lang($course);
-    $selections = explode('} {', rtrim(ltrim($questionattempt->responsesummary, '{'), '}'));
+
+    $selectionsummary = '';
+    $selections = '';
+
+    if (empty($questionattempt->responsesummary) || $questionattempt->responsesummary === null) {
+        $questionattempt->responsesummary = '';
+    } else {
+        $questionattempt->responsesummary = utils\get_string_html_removed(trim($questionattempt->responsesummary));
+        $questionattempt->responsesummary = utils\get_string_math_removed(trim($questionattempt->responsesummary));
+
+        $selections = explode('} {', rtrim(ltrim($questionattempt->responsesummary, '{'), '}'));
+
+        for ($i = 0; $i < count($selections); $i = $i + 1) {
+            $selections[$i] = utils\get_string_html_removed(trim($selections[$i]));
+            $selections[$i] = utils\get_string_math_removed(trim($selections[$i]));
+        }
+
+        $selectionsummary = implode ('[,]', $selections);
+    }
 
     return [[
         'actor' => utils\get_user($config, $user),
@@ -44,7 +62,7 @@ function gapselect(array $config, \stdClass $event, \stdClass $questionattempt, 
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => implode ('[,]', $selections),
+            'response' => $selectionsummary,
             'completion' => $questionattempt->responsesummary !== null,
             'success' => $questionattempt->rightanswer === $questionattempt->responsesummary,
             'extensions' => [

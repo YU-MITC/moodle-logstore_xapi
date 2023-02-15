@@ -14,12 +14,29 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Log creation script for the quiz module.
+ *
+ * @package    logstore_xapi
+ * @copyright (C) 2022 Yamaguchi University (gh-cc@mlex.cc.yamaguchi-u.ac.jp)
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace src\transformer\events\mod_quiz\question_answered;
+
 defined('MOODLE_INTERNAL') || die();
 
 use src\transformer\utils as utils;
 
-function multichoice(array $config, \stdClass $event, \stdClass $questionattempt, \stdClass $question) {
+/**
+ * This function creates answer log about multianswer question type.
+ * @param array $config - array of configurations.
+ * @param object $event - object of Moodle event.
+ * @param object $questionattempt - object of question attempt.
+ * @param object $question- object of question.
+ * @return string - xAPI formatted log statement.
+ */
+function multianswer(array $config, \stdClass $event, \stdClass $questionattempt, \stdClass $question) {
     $repo = $config['repo'];
     $user = $repo->read_record_by_id('user', $event->relateduserid);
     $course = $repo->read_record_by_id('course', $event->courseid);
@@ -28,23 +45,31 @@ function multichoice(array $config, \stdClass $event, \stdClass $questionattempt
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $lang = utils\get_course_lang($course);
 
-    $selectionsummary = '';
+    $responsesummary = '';
+    $response = '';
 
-    if (empty($questionattempt->responsesummary)) {
-        $questionattempt->responsesummary = '';
-    } else {
-        $questionattempt->responsesummary = utils\get_string_html_removed(trim($questionattempt->responsesummary));
-        $questionattempt->responsesummary = utils\get_string_math_removed(trim($questionattempt->responsesummary));
-
-        $selections = explode('; ', utils\get_string_html_removed($questionattempt->responsesummary));
-
-        for ($i = 0; $i < count($selections); $i = $i + 1) {
-            $selections[$i] = utils\get_string_html_removed(trim($selections[$i]));
-            $selections[$i] = utils\get_string_math_removed(trim($selections[$i]));
-        }
-
-        $selectionsummary = implode ('[,]', $selections);
+    if (!empty($questionattempt->responsesummary) && $questionattempt->responsesummary !== null) {
+        $responsesummary = $questionattempt->responsesummary;
+        $responsesummary = utils\get_string_html_removed(trim($responsesummary));
+        $responsesummary = utils\get_string_math_removed(trim($responsesummary));
+        
     }
+
+
+    $selections = array_reduce(
+        explode('; ', $questionattempt->responsesummary),
+#        explode('; ', $response),
+        function ($reduction, $selection) {
+            $split = explode("\n -> ", $selection);
+            if (count($split) == 2) {
+                $selectionkey = utils\get_string_math_removed(trim($split[0]));
+                $selectionvalue = utils\get_string_math_removed(trim($split[1]));
+                $reduction[$selectionkey] = $selectionvalue;
+            }
+                return $reduction;
+        },
+        []
+    );
 
     return [[
         'actor' => utils\get_user($config, $user),
@@ -56,16 +81,21 @@ function multichoice(array $config, \stdClass $event, \stdClass $questionattempt
         ],
         'object' => [
             'id' => utils\get_quiz_question_id($config, $coursemodule->id, $question->id),
-            'definition' => utils\get_multichoice_definition($config, $questionattempt, $question, $lang),
+            'definition' => [
+                'type' => 'http://adlnet.gov/expapi/activities/cmi.interaction',
+                'name' => [
+                    $lang => utils\get_string_html_removed($question->questiontext)
+                ],
+                'interactionType' => 'matching',
+            ]
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => $selectionsummary,
-            'success' => $questionattempt->rightanswer == $questionattempt->responsesummary,
-            'completion' => $questionattempt->responsesummary !== '',
+            'response' => $responsesummary,
+            'completion' => $questionattempt->responsesummary !== null,
+            'success' => $questionattempt->rightanswer === $questionattempt->responsesummary,
             'extensions' => [
-                'http://learninglocker.net/xapi/cmi/choice/response' =>
-                    utils\get_string_html_removed($questionattempt->responsesummary),
+                'http://learninglocker.net/xapi/cmi/matching/response' => $selections,
             ],
         ],
         'context' => [

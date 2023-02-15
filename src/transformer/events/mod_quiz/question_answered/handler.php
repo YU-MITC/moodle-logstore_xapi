@@ -53,7 +53,7 @@ function handler(array $config, \stdClass $event, \stdClass $questionattempt) {
         case 'pmatchjme':
         case 'calculated':
         case 'stack':
-        case 'multianswer':
+        case 'multianswer';
         case 'missingtype';
             return shortanswer($config, $event, $questionattempt, $question);
         case 'match':

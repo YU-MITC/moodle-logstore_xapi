@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * A Moodle plugin to send xAPI statements to an LRS using events in the Moodle logstore.
- *
- * @package    logstore_xapi
- * @copyright (C) 2020 Ryan Smith, jerrett fowler, and David Pesce
- * @copyright (C) 2022-2023 Yamaguchi University (gh-cc@mlex.cc.yamaguchi-u.ac.jp)
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
+namespace src\transformer\utils;
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'logstore_xapi';
-$plugin->version = 2022083000;
-$plugin->release = 'v4.8.0 (YU modified)';
-$plugin->supported = [39, 401];
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_STABLE;
+function get_string_math_removed($string) {
+    // Remove math characters.
+    $replacestrings = ["$$", "$"];
+    $tmp = str_replace($replacestrings, "", $string);
+    $replacestrings = ["\\[", "\["];
+    $tmp = str_replace($replacestrings, "[", $tmp);
+    $replacestrings = ["\\]", "\]"];
+    $tmp = str_replace($replacestrings, "]", $tmp);
+    $replacestrings = ["\\(", "\("];
+    $tmp = str_replace($replacestrings, "(", $tmp);
+    $replacestrings = ["\\)", "\)"];
+    $tmp = str_replace($replacestrings, ")", $tmp);
 
+    return trim($tmp);
+}

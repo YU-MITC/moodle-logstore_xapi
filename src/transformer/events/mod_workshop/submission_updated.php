@@ -44,7 +44,7 @@ function submission_updated(array $config, \stdClass $event) {
 
    $responsetitle = $workshopsubmission->title;
 
-    $reponsetext = '';
+    $responsetext = '';
 
     if (!empty($workshopsubmission->content)) {
         $responsetext = utils\get_string_html_removed(trim($workshopsubmission->content));

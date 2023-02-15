@@ -60,10 +60,21 @@ function chapter_viewed(array $config, \stdClass $event) {
     ];
 
     if ($chapter->subchapter != '0') {
-        $parentchapter = $repo->read_record_by_id('book_chapters', $chapter->subchapter);
-        $statement['context']['contextActivities']['parent'] = [
-            utils\get_activity\book_chapter($config, $course, $parentchapter, $event->contextinstanceid)
-        ];
+        $parentchapter = null;
+        $id = intval($chapter->id) - 1;
+        while ($id >= 0) {
+            $tmpchapter = $repo->read_record_by_id('book_chapters', $id);
+            if ($tmpchapter->subchapter == '0') {
+                $parentchapter = $tmpchapter;
+                break;
+	    }
+            $id = $id - 1;
+	}
+        if ($parentchapter !== null) {
+            $statement['context']['contextActivities']['parent'] = [
+                utils\get_activity\book_chapter($config, $course, $parentchapter, $event->contextinstanceid)
+            ];
+        }
     }
 
     return [$statement];

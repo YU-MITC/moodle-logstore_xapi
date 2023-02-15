@@ -40,6 +40,7 @@ function assignment_graded(array $config, \stdClass $event) {
     }
 
     $gradeitems = $repo->read_record('grade_items', [
+        'itemtype' => 'mod',
         'itemmodule' => 'assign',
         'iteminstance' => $grade->assignment
     ]);

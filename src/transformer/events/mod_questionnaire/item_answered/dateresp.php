@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * Log creation script for the questionnaire module.
  *
@@ -46,13 +45,12 @@ function dateresp(array $config, \stdClass $event, \stdClass $question, $tablena
     $lang = utils\get_course_lang($course);
     $tablename = 'questionnaire_' . $tablename;
 
-    $choice = null;
-    $choice = $repo->read_records($tablename, ['response_id' => $responseid, 'question_id' => $question->id]);
-    $choice = array_slice($choice, -1, 1);
-
     $choicelabel = '';
 
+    $choice = $repo->read_records($tablename, ['response_id' => $responseid, 'question_id' => $question->id]);
+
     if (!empty($choice)) {
+        $choice = array_slice($choice, -1, 1);
         $choicelabel = $choice[0]->response;
     }
 

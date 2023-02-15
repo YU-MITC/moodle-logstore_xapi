@@ -28,7 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 
 use src\transformer\utils as utils;
 
-
 /**
  * This function creates grades updated log about Kaltura media assignment module.
  * @param array $config - array of configurations.

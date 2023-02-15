@@ -29,7 +29,16 @@ function essay(array $config, \stdClass $event, \stdClass $questionattempt, \std
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $lang = utils\get_course_lang($course);
 
+    if (empty($questionattempt->responsesummary) || $questionattempt->responsesummary === null) {
+        $questionattempt->responsesummary = '';
+    }
+
     $responsesummary = is_null($questionattempt->responsesummary) ? '' : $questionattempt->responsesummary;
+
+    if (!empty($responsesummary)) {
+        $responsesummary = utils\get_string_html_removed(trim($responsesummary));
+        $responsesummary = utils\get_string_math_removed(trim($responsesummary));
+    }
 
     return [[
         'actor' => utils\get_user($config, $user),

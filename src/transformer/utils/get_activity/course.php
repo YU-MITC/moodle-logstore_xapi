@@ -39,6 +39,9 @@ function course(array $config, \stdClass $course) {
 
     if (utils\is_enabled_config($config, 'send_course_and_module_idnumber')) {
         $courseidnumber = property_exists($course, 'idnumber') ? $course->idnumber : null;
+        if ($courseidnumber === null) {
+            $courseidnumber = '';
+        }
         $object['definition']['extensions']['https://w3id.org/learning-analytics/learning-management-system/external-id'] = $courseidnumber;
     }
 

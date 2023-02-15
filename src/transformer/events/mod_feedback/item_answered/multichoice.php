@@ -26,10 +26,27 @@ function multichoice(array $config, \stdClass $event, \stdClass $feedbackvalue, 
     $course = $repo->read_record_by_id('course', $event->courseid);
     $feedback = $repo->read_record_by_id('feedback', $feedbackitem->feedback);
     $lang = utils\get_course_lang($course);
-    $choices = explode("\n|", substr($feedbackitem->presentation, 6));
+    $delim = '|';
+    if (strpos(substr($feedbackitem->presentation, 6), '\n|') !== false) {
+        $delim = '\n|';
+    }
+    $choices = explode($delim, substr($feedbackitem->presentation, 6));
+
+    for ($i = 0; $i < count($choices); $i = $i + 1) {
+        $choices[$i] = str_replace('\n', '', $choices[$i]);
+        $choices[$i] = utils\get_string_html_removed(trim($choices[$i]));
+        $choices[$i] = utils\get_string_math_removed(trim($choices[$i]));
+    }
+
     $selectedchoice = '';
-    if (!empty($choices) && count($choices) >= 1) {
+
+    if (!empty($choices) && count($choices) >= 1 && intval($feedbackvalue->value) >= 1) {
         $selectedchoice = $choices[intval($feedbackvalue->value) - 1];
+    }
+
+    if (!empty($selectedchoice)) {
+        $selectedchoice = utils\get_string_html_removed(trim($selectedchoice));
+        $selectedchoice = utils\get_string_math_removed(trim($selectedchoice));
     }
 
     return [[

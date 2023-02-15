@@ -28,17 +28,33 @@ function randomsamatch(array $config, \stdClass $event, \stdClass $questionattem
     $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $lang = utils\get_course_lang($course);
-    $selections = array_reduce(
-        explode('; ', $questionattempt->responsesummary),
-        function ($reduction, $selection) {
-            $split = explode("\n -> ", $selection);
-            $selectionkey = $split[0];
-            $selectionvalue = $split[1];
-            $reduction[$selectionkey] = $selectionvalue;
-            return $reduction;
-        },
-        []
-    );
+
+    $responsesummary = '';
+    $selections = '';
+
+    if (!empty($questionattempt->responsesummary) && $questionattempt->responsesummary !== null) {
+        $responsesummary = $questionattempt->responsesummary;
+
+        if (!empty($responsesummary)) {
+            $responsesummary = utils\get_string_html_removed(trim($responsesummary));
+            $responsesummary = utils\get_string_math_removed(trim($responsesummary));
+        }
+
+        $selections = array_reduce(
+            explode('; ', $questionattempt->responsesummary),
+            function ($reduction, $selection) {
+                $split = explode("\n -> ", $selection);
+                $selectionkey = utils\get_string_math_removed(trim($split[0]));
+                $selectionvalue = '';
+                if (count($split) >= 2) {
+                    $selectionvalue = utils\get_string_math_removed(trim($split[1]));
+                }
+                $reduction[$selectionkey] = $selectionvalue;
+                return $reduction;
+            },
+            []
+        );
+    }
 
     return [[
         'actor' => utils\get_user($config, $user),
@@ -60,8 +76,8 @@ function randomsamatch(array $config, \stdClass $event, \stdClass $questionattem
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => $questionattempt->responsesummary,
-            'completion' => $questionattempt->responsesummary !== '',
+            'response' => $responsesummary,
+            'completion' => !empty($questionattempt->responsesummary) && $questionattempt->responsesummary !== '',
             'success' => $questionattempt->rightanswer === $questionattempt->responsesummary,
             'extensions' => [
                 'http://learninglocker.net/xapi/cmi/matching/response' => $selections,

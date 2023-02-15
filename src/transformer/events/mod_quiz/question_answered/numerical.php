@@ -33,7 +33,7 @@ use src\transformer\utils as utils;
  * @param array $config - array of configurations.
  * @param object $event - object of Moodle event.
  * @param object $questionattempt - object of question attempt.
- * @param object $questionnaire - object of question.
+ * @param object $question - object of question.
  * @return string - xAPI formatted log statement.
  */
 function numerical(array $config, \stdClass $event, \stdClass $questionattempt, \stdClass $question) {
@@ -45,8 +45,15 @@ function numerical(array $config, \stdClass $event, \stdClass $questionattempt, 
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $lang = utils\get_course_lang($course);
 
-    if (empty($questionattempt->responsesummary)) {
-        $questionattempt->responsesummary = '';
+    $responsesummary = '';
+
+    if (!empty($questionattempt->responsesummary)) {
+        $responsesummary = $questionattempt->responsesummary;
+    }
+
+    if (!empty($responsesummary)) {
+        $responsesummary = utils\get_string_html_removed(trim($responsesummary));
+        $responsesummary = utils\get_string_math_removed(trim($responsesummary));
     }
 
     return [[
@@ -69,7 +76,7 @@ function numerical(array $config, \stdClass $event, \stdClass $questionattempt, 
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => $questionattempt->responsesummary,
+            'response' => $responsesummary,
             'completion' => $questionattempt->responsesummary !== '',
             'success' => $questionattempt->rightanswer === $questionattempt->responsesummary,
             'extensions' => [

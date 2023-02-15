@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Callback function for Kaltura media Assignment.
+ * Log creation script for the Kaltura media assignment.
  *
  * @package    logstore_xapi
  * @copyright (C) 2022 Yamaguchi University (gh-cc@mlex.cc.yamaguchi-u.ac.jp)

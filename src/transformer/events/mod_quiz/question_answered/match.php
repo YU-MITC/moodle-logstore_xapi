@@ -33,7 +33,7 @@ use src\transformer\utils as utils;
  * @param array $config - array of configurations.
  * @param object $event - object of Moodle event.
  * @param object $questionattempt - object of question attempt.
- * @param object $questionnaire - object of question.
+ * @param object $question - object of question.
  * @return string - xAPI formatted log statement.
  */
 function match(array $config, \stdClass $event, \stdClass $questionattempt, \stdClass $question) {
@@ -44,26 +44,31 @@ function match(array $config, \stdClass $event, \stdClass $questionattempt, \std
     $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $lang = utils\get_course_lang($course);
-    $selections = array_reduce(
-        explode('; ', $questionattempt->responsesummary),
-        function ($reduction, $selection) {
-            $split = explode("\n -> ", $selection);
-            if (count($split) == 2) {
-                $selectionkey = $split[0];
-                $selectionvalue = $split[1];
-                $reduction[$selectionkey] = $selectionvalue;
-            }
-                return $reduction;
-        },
-        []
-    );
 
-    if (empty($selections)) {
-        $selections = '';
-    }
+    $responsesummary = '';
+    $response = '';
+    $selections = '';
 
-    if (empty($questionattempt->responsesummary)) {
-        $questionattempt->responsesummary = '';
+    if (!empty($questionattempt->responsesummary) && $questionattempt->responsesummary !== null) {
+        $responsesummary = $questionattempt->responsesummary;
+        $responsesummary = utils\get_string_html_removed(trim($responsesummary));
+        $responsesummary = utils\get_string_math_removed(trim($responsesummary));
+
+        $selections = array_reduce(
+            explode('; ', $questionattempt->responsesummary),
+            function ($reduction, $selection) {
+                $split = explode("\n -> ", $selection);
+                if (count($split) == 2) {
+#                    $selectionkey = $split[0];
+                    $selectionkey = utils\get_string_math_removed(trim($split[0]));
+#                    $selectionvalue = $split[1];
+                    $selectionvalue = utils\get_string_math_removed(trim($split[1]));
+                    $reduction[$selectionkey] = $selectionvalue;
+                }
+                    return $reduction;
+            },
+            []
+        );
     }
 
     return [[
@@ -86,7 +91,7 @@ function match(array $config, \stdClass $event, \stdClass $questionattempt, \std
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => $questionattempt->responsesummary,
+            'response' => $responsesummary,
             'completion' => $questionattempt->responsesummary !== null,
             'success' => $questionattempt->rightanswer === $questionattempt->responsesummary,
             'extensions' => [

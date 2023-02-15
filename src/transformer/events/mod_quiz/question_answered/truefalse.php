@@ -28,6 +28,20 @@ function truefalse(array $config, \stdClass $event, \stdClass $questionattempt, 
     $quiz = $repo->read_record_by_id('quiz', $attempt->quiz);
     $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
     $lang = utils\get_course_lang($course);
+
+    $responsesummary = '';
+
+    if (empty($questionattempt->responsesummary)) {
+        $responsesummary = $questionattempt->responsesummary;
+    }
+
+    if (empty($responsesummary)) {
+        $responsesummary = "";
+    } else {
+        $responsesummary = utils\get_string_html_removed(trim($responsesummary));
+        $responsesummary = utils\get_string_math_removed(trim($responsesummary));
+    }
+
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => [
@@ -48,7 +62,7 @@ function truefalse(array $config, \stdClass $event, \stdClass $questionattempt, 
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => utils\get_string_html_removed($questionattempt->responsesummary),
+            'response' => $responsesummary,
             'completion' => $questionattempt->responsesummary !== null,
             'success' => $questionattempt->rightanswer === $questionattempt->responsesummary,
             'extensions' => [

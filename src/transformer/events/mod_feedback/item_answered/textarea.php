@@ -27,6 +27,18 @@ function textarea(array $config, \stdClass $event, \stdClass $feedbackvalue, \st
     $feedback = $repo->read_record_by_id('feedback', $feedbackitem->feedback);
     $lang = utils\get_course_lang($course);
 
+
+    $responsevalue = '';
+
+    if (!empty($feedbackvalue->value)) {
+        $responsevalue = $feedbackvalue->value;
+    }
+
+    if (!empty($responsevalue)) {
+        $responsevalue = utils\get_string_html_removed(trim($responsevalue));
+        $responsevalue = utils\get_string_math_removed(trim($responsevalue));
+    }
+
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => [
@@ -47,7 +59,7 @@ function textarea(array $config, \stdClass $event, \stdClass $feedbackvalue, \st
         ],
         'timestamp' => utils\get_event_timestamp($event),
         'result' => [
-            'response' => $feedbackvalue->value,
+            'response' => $responsevalue,
             'completion' => $feedbackvalue->value !== '',
         ],
         'context' => [
