@@ -48,6 +48,10 @@ function gapselect(array $config, \stdClass $event, \stdClass $questionattempt, 
         $selectionsummary = implode ('[,]', $selections);
     }
 
+    if (empty($questionattempt->rightanswer)) {
+        $questionattempt->rightanswer = '';
+    }
+
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => [

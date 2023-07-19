@@ -42,6 +42,10 @@ function truefalse(array $config, \stdClass $event, \stdClass $questionattempt, 
         $responsesummary = utils\get_string_math_removed(trim($responsesummary));
     }
 
+    if (empty($questionattempt->rightanswer)) {
+        $questionattempt->rightanswer = '';
+    }
+
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => [

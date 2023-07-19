@@ -37,6 +37,10 @@ Now, codes of this plugin are based on the xAPI plugin (logstore_xapi) version 4
 Change log of YU Kaltura Media Local Libraries
 ------
 
+Version 4.9.0 (YU mnodified)
+
+* fixed issues that occur when there are blank right-answers in quizzes.
+
 Version 4.8.0 (YU mnodified)
 
 * fixed issues that occur when there are blank answers in quizzes, feedbacks, and questionnaires.

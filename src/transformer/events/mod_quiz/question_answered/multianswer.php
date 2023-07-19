@@ -71,6 +71,10 @@ function multianswer(array $config, \stdClass $event, \stdClass $questionattempt
         []
     );
 
+    if (empty($questionattempt->rightanswer)) {
+        $questionattempt->rightanswer = '';
+    }
+
     return [[
         'actor' => utils\get_user($config, $user),
         'verb' => [
